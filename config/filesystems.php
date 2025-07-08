@@ -60,13 +60,22 @@ return [
             'report' => false,
         ],
         'supabase' => [
-            'driver' => 's3',
-            'key' => env('AWS_ACCESS_KEY_ID'),
-            'secret' => env('AWS_SECRET_ACCESS_KEY'),
-            'region' => env('AWS_DEFAULT_REGION'),
-            'bucket' => env('AWS_BUCKET'),
-            'endpoint' => env('AWS_ENDPOINT'),
-            'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', true),
+            'driver' => 'supabase',
+            'key'    => env('SUPABASE_STORAGE_KEY'), // Use a privileged key; read-only does not work
+            'bucket' => env('SUPABASE_STORAGE_BUCKET'),
+            'endpoint' => env('SUPABASE_STORAGE_ENDPOINT'),
+
+            'url'      => null,
+
+            'public'                      => true,  // Default to true
+            'defaultUrlGeneration'        => null, // 'signed' | 'public' <- default depends on public
+
+            'defaultUrlGenerationOptions' => [
+                'download'  => false,
+                'transform' => [],
+            ],
+
+            'signedUrlExpires' => 60*60*24, // 1 day <- default to 1 hour (3600)
         ],
         'r2' => [
             'driver' => 'r2',
