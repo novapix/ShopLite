@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProductCategoryController;
+use App\Http\Controllers\RolesController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -20,6 +21,8 @@ Route::prefix('admin')
         Route::get('/category', [ProductCategoryController::class, 'index'])->name('category.index');
         Route::get('/category/create', [ProductCategoryController::class, 'create'])->name('category.create');
         Route::post('/category', [ProductCategoryController::class, 'store'])->name('category.store');
+
+        Route::get('/roles', [RolesController::class, 'index'])->name('roles.index');
     });
 
 require __DIR__.'/settings.php';
