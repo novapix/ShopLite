@@ -24,3 +24,4 @@ yarn-error.log
 /.zed
 _ide_helper.php
 _ide_helper_models.php
+database/migrations/2025_07_20_000003_create_category_images_table.php
