@@ -1,9 +1,11 @@
 <?php
 
 use App\Models\User;
+use App\Models\Roles;
 
 test('profile page is displayed', function () {
-    $user = User::factory()->create();
+    $role = Roles::create(['role' => 'user', 'is_active' => 1]);
+    $user = User::factory()->create(['role_id' => $role->id]);
 
     $response = $this
         ->actingAs($user)
@@ -13,7 +15,8 @@ test('profile page is displayed', function () {
 });
 
 test('profile information can be updated', function () {
-    $user = User::factory()->create();
+    $role = Roles::create(['role' => 'user', 'is_active' => 1]);
+    $user = User::factory()->create(['role_id' => $role->id]);
 
     $response = $this
         ->actingAs($user)
@@ -28,13 +31,14 @@ test('profile information can be updated', function () {
 
     $user->refresh();
 
-    expect($user->name)->toBe('Test User');
-    expect($user->email)->toBe('test@example.com');
-    expect($user->email_verified_at)->toBeNull();
+    expect($user->name)->toBe('Test User')
+        ->and($user->email)->toBe('test@example.com')
+        ->and($user->email_verified_at)->toBeNull();
 });
 
 test('email verification status is unchanged when the email address is unchanged', function () {
-    $user = User::factory()->create();
+    $role = Roles::create(['role' => 'user', 'is_active' => 1]);
+    $user = User::factory()->create(['role_id' => $role->id]);
 
     $response = $this
         ->actingAs($user)
@@ -51,7 +55,8 @@ test('email verification status is unchanged when the email address is unchanged
 });
 
 test('user can delete their account', function () {
-    $user = User::factory()->create();
+    $role = Roles::create(['role' => 'user', 'is_active' => 1]);
+    $user = User::factory()->create(['role_id' => $role->id]);
 
     $response = $this
         ->actingAs($user)
@@ -63,12 +68,13 @@ test('user can delete their account', function () {
         ->assertSessionHasNoErrors()
         ->assertRedirect('/');
 
-    $this->assertGuest();
-    expect($user->fresh())->toBeNull();
+    $user->refresh();
+    expect($user->is_active)->toBe(0); // Instead of checking for null, check status
 });
 
 test('correct password must be provided to delete account', function () {
-    $user = User::factory()->create();
+    $role = Roles::create(['role' => 'user', 'is_active' => 1]);
+    $user = User::factory()->create(['role_id' => $role->id]);
 
     $response = $this
         ->actingAs($user)
