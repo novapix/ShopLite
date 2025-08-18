@@ -1,32 +1,20 @@
-import React from "react";
+import { useEffect } from 'react';
+import { usePage } from '@inertiajs/react';
+import { toast, Toaster } from 'react-hot-toast';
 
-type FlashProps = {
-    flash?: {
-        success?: string;
-        error?: string;
-    };
-};
+const FlashMessage = () => {
+    const { flash } = usePage().props as { flash?: { success?: string; error?: string } };
 
-const FlashMessage: React.FC<FlashProps> = ({ flash }) => {
-    if (!flash) return null;
+    useEffect(() => {
+        if (flash?.success) {
+            toast.success(flash.success);
+        }
+        if (flash?.error) {
+            toast.error(flash.error);
+        }
+    }, [flash?.success, flash?.error]);
 
-    if (flash.success) {
-        return (
-            <div className="bg-green-100 text-green-700 p-3 rounded mb-4">
-                {flash.success}
-            </div>
-        );
-    }
-
-    if (flash.error) {
-        return (
-            <div className="bg-red-100 text-red-700 p-3 rounded mb-4">
-                {flash.error}
-            </div>
-        );
-    }
-
-    return null;
+    return <Toaster position="top-right" toastOptions={{ duration: 5000 }} />;
 };
 
 export default FlashMessage;
