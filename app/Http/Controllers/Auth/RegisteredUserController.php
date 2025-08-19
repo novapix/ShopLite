@@ -10,6 +10,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
+use App\Models\Customer;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -31,20 +34,36 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'contact' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'address' => 'required|string|max:255',
+            'dob' => 'required|date',
         ]);
+        $customerRole = \App\Models\Roles::where('role', 'customer')->first();
+
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'password' => Hash::make(Str::random(16)), // random fake pass
+            'role_id' => $customerRole ? $customerRole->id : null,
+        ]);
+
+        $customer = Customer::create([
+            'name' => $request->name,
+            'contact' => $request->contact,
+            'email' => $request->email,
+            'address' => $request->address,
+            'dob' => $request->dob,
+            'user_id' => $user->id,
         ]);
 
         event(new Registered($user));
 
-        Auth::login($user);
+        // Send password reset email
+        Password::sendResetLink(['email' => $user->email]);
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        // Do not log in user
+        return redirect()->route('login')->with('status', 'Registration successful! Please check your email to set your password.');
     }
 }

@@ -7,9 +7,7 @@ use Database\Factories\UserFactory;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\DatabaseNotificationCollection;
@@ -17,8 +15,6 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
 
 /**
- * 
- *
  * @property int $id
  * @property int $role_id
  * @property string $name
@@ -32,6 +28,7 @@ use Illuminate\Support\Carbon;
  * @property-read DatabaseNotificationCollection<int, DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
  * @property-read Roles|null $roles
+ *
  * @method static UserFactory factory($count = null, $state = [])
  * @method static Builder<static>|User newModelQuery()
  * @method static Builder<static>|User newQuery()
@@ -46,6 +43,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder<static>|User whereRememberToken($value)
  * @method static Builder<static>|User whereRoleId($value)
  * @method static Builder<static>|User whereUpdatedAt($value)
+ *
  * @mixin Eloquent
  */
 class User extends Authenticatable
@@ -87,7 +85,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-    public function roles(): HasOne {
-        return $this->hasOne(Roles::class,  'id', 'role_id');
+
+    public function roles(): HasOne
+    {
+        return $this->hasOne(Roles::class, 'id', 'role_id');
     }
 }
