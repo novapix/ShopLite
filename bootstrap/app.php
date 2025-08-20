@@ -26,9 +26,11 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // Force JSON for all API requests
        $middleware->api(append: [
+            // \App\Http\Middleware\ApiRoleCheck::class,
             \App\Http\Middleware\ForceJsonApi::class,
         ]);
         $middleware->alias([
+            'api.role' => \App\Http\Middleware\ApiRoleCheck::class,
             'role' => \App\Http\Middleware\CheckRole::class,
             'role.redirect' => \App\Http\Middleware\RoleBasedRedirect::class,
         ]);
